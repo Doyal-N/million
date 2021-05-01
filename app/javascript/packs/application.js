@@ -8,6 +8,7 @@ import 'stylesheets/application'
 import Rails from "@rails/ujs"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
+import 'bootstrap'
 
 const images = require.context('../images', true)
 

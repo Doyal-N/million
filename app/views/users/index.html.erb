@@ -4,7 +4,7 @@
 <div class="col-md-8 col-md-offset-2">
   <table class="users-table table">
     <thead>
-      <tr>
+      <tr class='text-white'>
         <th class="text-center">Место</th>
         <th class="text-center">Имя</th>
         <th class="text-center">Выигрыш</th>
@@ -15,7 +15,7 @@
 
     <%# Для каждого пользователя выводим информацию о его выигрыше, ссылку на профиль и так далее %>
     <% @users.each_with_index do |user, index| %>
-      <tr class="text-center">
+      <tr class="text-center text-white">
         <td><%= index + 1 %></td>
         <td><%= link_to user.name, user_path(user) %></td>
         <td><%= number_to_currency user.balance %></td>
