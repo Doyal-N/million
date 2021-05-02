@@ -1,22 +1,20 @@
 class Game < ApplicationRecord
- PRIZES = [
-    100, 200, 300, 500, 1000,
-    2000, 4000, 8000, 16000, 32000,
-    64000, 125000, 250000, 500000, 1000000
-  ].freeze
-
+  PRIZES = [
+      100, 200, 300, 500, 1000,
+      2000, 4000, 8000, 16_000, 32_000,
+      64_000, 125_000, 250_000, 500_000, 1_000_000
+    ].freeze
   FIREPROOF_LEVELS = [4, 9, 14].freeze
   TIME_LIMIT = 35.minutes
 
   belongs_to :user
-
   has_many :game_questions, dependent: :destroy
 
   validates :user, presence: true
-  validates :current_level, numericality: {only_integer: true}, allow_nil: false
+  validates :current_level, numericality: { only_integer: true }, allow_nil: false
   validates :prize,
             presence: true,
-            numericality: {greater_than_or_equal_to: 0, less_than_or_equal_to: PRIZES.last}
+            numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: PRIZES.last }
 
   scope :in_progress, -> { where(finished_at: nil) }
 
@@ -64,10 +62,10 @@ class Game < ApplicationRecord
 
   # проверяет текущее время и грохает игру + возвращает true если время прошло
   def time_out!
-    if (Time.now - created_at) > TIME_LIMIT
-      finish_game!(fire_proof_prize(previous_level), true)
-      true
-    end
+    return unless (Time.now - created_at) > TIME_LIMIT
+
+    finish_game!(fire_proof_prize(previous_level), true)
+    true
   end
 
   #---------  Основные игровые методы ------------------------------------
@@ -87,13 +85,12 @@ class Game < ApplicationRecord
 
     if current_game_question.answer_correct?(letter)
       if current_level == Question::QUESTION_LEVELS.max
-        self.current_level += 1
         finish_game!(PRIZES[Question::QUESTION_LEVELS.max], false)
       else
-        self.current_level += 1
         save!
       end
 
+      self.current_level += 1
       true
     else
       finish_game!(fire_proof_prize(previous_level), true)
@@ -103,7 +100,8 @@ class Game < ApplicationRecord
 
   def take_money!
     return if time_out! || finished?
-    finish_game!((previous_level > -1) ? PRIZES[previous_level] : 0, false)
+
+    finish_game!(previous_level > -1 ? PRIZES[previous_level] : 0, false)
   end
 
 
@@ -145,21 +143,10 @@ class Game < ApplicationRecord
     false
   end
 
-
-  # Результат игры, одно из:
-  # :fail - игра проиграна из-за неверного вопроса
-  # :timeout - игра проиграна из-за таймаута
-  # :won - игра выиграна (все 15 вопросов покорены)
-  # :money - игра завершена, игрок забрал деньги
-  # :in_progress - игра еще идет
   def status
     return :in_progress unless finished?
 
     if is_failed
-      # todo: дорогой ученик!
-      # Если TIME_LIMIT в будущем изменится, статусы старых, уже сыгранных игр
-      # могут измениться. Подумайте как это пофиксить!
-      # Ответ найдете в файле настроек вашего тестового окружения
       if (finished_at - created_at) <= TIME_LIMIT
         :fail
       else

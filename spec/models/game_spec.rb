@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe Game, type: :model do
   let(:user) { create(:user) }
   let(:game_w_questions) { create(:game_with_questions, user: user) }
+  let(:game_timeout) { create(:game_with_questions, user: user, created_at: Time.now - 36.minutes) }
+  let(:game_finished) { create(:game_with_questions, user: user, is_failed: true, finished_at: Time.now + 1.day) }
 
   describe 'Game Factory' do
     it 'Game.create_game! new correct game' do
@@ -41,9 +43,6 @@ RSpec.describe Game, type: :model do
 
   describe 'take_money!' do
     context 'when return' do
-      let(:game_timeout) { create(:game_with_questions, user: user, created_at: Time.now - 36.minutes) }
-      let(:game_finished) { create(:game_with_questions, user: user, finished_at: Time.now + 1.day) }
-
       it 'time over' do
         game_timeout.take_money!
 
@@ -53,7 +52,6 @@ RSpec.describe Game, type: :model do
       end
 
       it 'game finished' do
-        game_finished.is_failed = true
         game_finished.take_money!
 
         expect(game_finished.status).to eq(:timeout)
@@ -73,6 +71,38 @@ RSpec.describe Game, type: :model do
         expect(game_w_questions.status).to eq :money
         expect(game_w_questions.finished?).to be_truthy
         expect(user.balance).to eq game_w_questions.prize
+      end
+    end
+  end
+
+  describe 'status' do
+    it ':in_progress' do
+      expect(game_w_questions.status).to eq(:in_progress)
+    end
+
+    context 'when failed' do
+      it 'time over, status :timeout' do
+        expect(game_finished.status).to eq(:timeout)
+      end
+
+      it ':fail' do
+        game_w_questions.finished_at = Time.now
+        game_w_questions.is_failed = true
+
+        expect(game_w_questions.status).to eq(:fail)
+      end
+    end
+
+    context 'when not failed' do
+      before(:each) { game_w_questions.finished_at = Time.now }
+
+      it ':won' do
+        game_w_questions.current_level = 15
+        expect(game_w_questions.status).to eq(:won)
+      end
+
+      it ':money' do
+        expect(game_w_questions.status).to eq(:money)
       end
     end
   end
