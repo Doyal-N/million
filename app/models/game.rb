@@ -101,9 +101,8 @@ class Game < ApplicationRecord
     end
   end
 
-  # Записываем юзеру игровую сумму на счет и завершаем игру,
   def take_money!
-    return if time_out! || finished? # из законченной или неначатой игры нечего брать
+    return if time_out! || finished?
     finish_game!((previous_level > -1) ? PRIZES[previous_level] : 0, false)
   end
 
@@ -177,12 +176,9 @@ class Game < ApplicationRecord
 
   private
 
-  # Метод завершатель игры
   # Обновляет все нужные поля и начисляет юзеру выигрыш
   def finish_game!(amount = 0, failed = true)
 
-    # оборачиваем в транзакцию - игра заканчивается
-    # и баланс юзера пополняется только вместе
     transaction do
       self.prize = amount
       self.finished_at = Time.now

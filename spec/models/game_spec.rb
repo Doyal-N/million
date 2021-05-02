@@ -4,30 +4,21 @@ RSpec.describe Game, type: :model do
   let(:user) { create(:user) }
   let(:game_w_questions) { create(:game_with_questions, user: user) }
 
-  context 'Game Factory' do
+  describe 'Game Factory' do
     it 'Game.create_game! new correct game' do
       generate_questions(60)
       game = nil
 
-      expect {
-        game = Game.create_game_for_user!(user)
-      }.to change(Game, :count).by(1).and(
-        change(GameQuestion, :count).by(15).and(
-          change(Question, :count).by(0)
-        )
-      )
-      # Проверяем статус и поля
+      expect { game = described_class.create_game_for_user!(user) }.to change(described_class, :count).by(1)
+        .and(change(GameQuestion, :count).by(15))
       expect(game.user).to eq(user)
       expect(game.status).to eq(:in_progress)
-
-      # Проверяем корректность массива игровых вопросов
       expect(game.game_questions.size).to eq(15)
       expect(game.game_questions.map(&:level)).to eq (0..14).to_a
     end
   end
 
-  context 'game mechanics' do
-    # Правильный ответ должен продолжать игру
+  describe 'game mechanics' do
     it 'answer correct continues game' do
       # Текущий уровень игры и статус
       level = game_w_questions.current_level
@@ -45,6 +36,44 @@ RSpec.describe Game, type: :model do
       # Игра продолжается
       expect(game_w_questions.status).to eq(:in_progress)
       expect(game_w_questions.finished?).to be_falsey
+    end
+  end
+
+  describe 'take_money!' do
+    context 'when return' do
+      let(:game_timeout) { create(:game_with_questions, user: user, created_at: Time.now - 36.minutes) }
+      let(:game_finished) { create(:game_with_questions, user: user, finished_at: Time.now + 1.day) }
+
+      it 'time over' do
+        game_timeout.take_money!
+
+        expect(game_timeout.status).to eq(:timeout)
+        expect(game_timeout.prize).to eq 0
+        expect(user.balance).to eq 0
+      end
+
+      it 'game finished' do
+        game_finished.is_failed = true
+        game_finished.take_money!
+
+        expect(game_finished.status).to eq(:timeout)
+        expect(game_finished.prize).to eq 0
+        expect(user.balance).to eq 0
+      end
+    end
+
+    context 'when take money' do
+      it 'user take money' do
+        question = game_w_questions.current_game_question
+        game_w_questions.answer_current_question!(question.correct_answer_key)
+
+        game_w_questions.take_money!
+
+        expect(game_w_questions.prize).to be > 0
+        expect(game_w_questions.status).to eq :money
+        expect(game_w_questions.finished?).to be_truthy
+        expect(user.balance).to eq game_w_questions.prize
+      end
     end
   end
 end
