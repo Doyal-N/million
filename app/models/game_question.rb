@@ -6,10 +6,7 @@ class GameQuestion < ApplicationRecord
   # автоматически берутся из связанной модели question
   delegate :text, :level, to: :question, allow_nil: true
 
-  # без игры и вопроса - игровой вопрос не имеет смысла
   validates :game, :question, presence: true
-
-  # в полях a,b,c,d прячутся индексы ответов из объекта :game
   validates :a, :b, :c, :d, inclusion: {in: 1..4}
 
   # Автоматическая сериализация поля в базу (мы юзаем как обычный хэш,
@@ -24,9 +21,6 @@ class GameQuestion < ApplicationRecord
   #   friend_call: 'Василий Петрович считает, что правильный ответ A'
   # }
   #
-
-
-  # ----- Основные методы для доступа к данным в шаблонах и контроллерах -----------
 
   # Возвращает хэш, отсортированный по ключам:
   # {'a' => 'Текст ответа Х', 'b' => 'Текст ответа У', ... }
@@ -46,7 +40,7 @@ class GameQuestion < ApplicationRecord
 
   # ключ правильного ответа 'a', 'b', 'c', или 'd'
   def correct_answer_key
-    {a => 'a', b => 'b', c => 'c', d => 'd'}[1]
+    { a => 'a', b => 'b', c => 'c', d => 'd' }[1]
   end
 
   # текст правильного ответа
@@ -86,7 +80,7 @@ class GameQuestion < ApplicationRecord
   def keys_to_use_in_help
     keys_to_use = variants.keys
     # Учитываем наличие подсказки 50/50
-    keys_to_use = help_hash[:fifty_fifty] if help_hash.has_key?(:fifty_fifty)
+    keys_to_use = help_hash[:fifty_fifty] if help_hash.key?(:fifty_fifty)
     keys_to_use
   end
 end

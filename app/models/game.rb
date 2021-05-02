@@ -104,43 +104,15 @@ class Game < ApplicationRecord
     finish_game!(previous_level > -1 ? PRIZES[previous_level] : 0, false)
   end
 
-
-  # todo: дорогой ученик!
-  # Код метода ниже можно сократиь в 3 раза с помощью возможностей Ruby и Rails,
-  # подумайте как и реализуйте. Помните о безопасности и входных данных!
-  #
-  # Вариант решения вы найдете в комментарии в конце файла, отвечающего за настройки
-  # хранения сессий вашего приложения. Вот такой вот вам ребус :)
-
-  # Создает варианты подсказок для текущего игрового вопроса.
-  # Возвращает true, если подсказка применилась успешно,
-  # false если подсказка уже заюзана.
-  #
-  # help_type = :fifty_fifty | :audience_help | :friend_call
   def use_help(help_type)
-    case help_type
-    when :fifty_fifty
-      unless fifty_fifty_used
-        # ActiveRecord метод toggle! переключает булевое поле сразу в базе
-        toggle!(:fifty_fifty_used)
-        current_game_question.add_fifty_fifty
-        return true
-      end
-    when :audience_help
-      unless audience_help_used
-        toggle!(:audience_help_used)
-        current_game_question.add_audience_help
-        return true
-      end
-    when :friend_call
-      unless friend_call_used
-        toggle!(:friend_call_used)
-        current_game_question.add_friend_call
-        return true
-      end
-    end
+    help_types = %i[fifty_fifty audience_help friend_call]
+    raise ArgumentError.new('wrong help_type') unless help_types.include?(help_type)
 
-    false
+    unless self["#{help_type}_used"]
+      toggle!(help_type)
+      current_game_question.send("add_#{help_type}")
+      true
+    end
   end
 
   def status
@@ -152,12 +124,10 @@ class Game < ApplicationRecord
       else
         :timeout
       end
+    elsif !is_failed && current_level > Question::QUESTION_LEVELS.max
+      :won
     else
-      if current_level > Question::QUESTION_LEVELS.max
-        :won
-      else
-        :money
-      end
+      :money
     end
   end
 
@@ -176,8 +146,6 @@ class Game < ApplicationRecord
     end
   end
 
-  # По заданному уровню вопроса вычисляем вознаграждение за ближайшую несгораемую сумму
-  # noinspection RubyArgCount
   def fire_proof_prize(answered_level)
     lvl = FIREPROOF_LEVELS.select { |x| x <= answered_level }.last
     lvl.present? ? PRIZES[lvl] : 0
