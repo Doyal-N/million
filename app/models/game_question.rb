@@ -33,12 +33,10 @@ class GameQuestion < ApplicationRecord
     }
   end
 
-  # Возвращает истину, если переданная буква (строка или символ) содержит верный ответ
   def answer_correct?(letter)
     correct_answer_key == letter.to_s.downcase
   end
 
-  # ключ правильного ответа 'a', 'b', 'c', или 'd'
   def correct_answer_key
     { a => 'a', b => 'b', c => 'c', d => 'd' }[1]
   end

@@ -1,4 +1,4 @@
 push:
 	git add .
-	git commit -m 'fix'
+	git commit -m '$(com)'
 	git push
