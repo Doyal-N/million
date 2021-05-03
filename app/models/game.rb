@@ -54,7 +54,6 @@ class Game < ApplicationRecord
     finished_at.present?
   end
 
-  # проверяет текущее время и грохает игру + возвращает true если время прошло
   def time_out!
     return unless (Time.now - created_at) > TIME_LIMIT
 
