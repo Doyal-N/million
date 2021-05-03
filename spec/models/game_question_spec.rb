@@ -29,10 +29,5 @@ RSpec.describe GameQuestion, type: :model do
       expect(game_question.correct_answer_key).to eq('b')
       expect(question.correct_answer_key).to eq('d')
     end
-
-    it 'incorrect answer' do
-      expect(question.correct_answer_key).not_to eq('c')
-      expect(game_question.correct_answer_key).not_to eq('a')
-    end
   end
 end
