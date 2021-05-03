@@ -37,20 +37,14 @@ class Game < ApplicationRecord
     end
   end
 
-  #---------  Основные методы доступа к состоянию игры ------------------
-
-  # последний отвеченный вопрос игры, *nil* для новой игры!
   def previous_game_question
-    # с помощью ruby метода detect находим в массиве game_questions нужный вопрос
-    game_questions.detect { |q| q.question.level == previous_level }
+    game_questions.find { |q| q.question.level == previous_level }
   end
 
-  # текущий, еще неотвеченный вопрос игры
   def current_game_question
-    game_questions.detect { |q| q.question.level == current_level }
+    game_questions.find { |q| q.question.level == current_level }
   end
 
-  # -1 для новой игры!
   def previous_level
     current_level - 1
   end

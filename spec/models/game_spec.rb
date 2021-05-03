@@ -22,20 +22,15 @@ RSpec.describe Game, type: :model do
 
   describe 'game mechanics' do
     it 'answer correct continues game' do
-      # Текущий уровень игры и статус
       level = game_w_questions.current_level
       q = game_w_questions.current_game_question
+
       expect(game_w_questions.status).to eq(:in_progress)
 
       game_w_questions.answer_current_question!(q.correct_answer_key)
 
-      # Перешли на след. уровень
       expect(game_w_questions.current_level).to eq(level + 1)
-
-      # Ранее текущий вопрос стал предыдущим
       expect(game_w_questions.current_game_question).not_to eq(q)
-
-      # Игра продолжается
       expect(game_w_questions.status).to eq(:in_progress)
       expect(game_w_questions.finished?).to be_falsey
     end
@@ -81,7 +76,7 @@ RSpec.describe Game, type: :model do
     end
 
     context 'when failed' do
-      it 'time over, status :timeout' do
+      it ':timeout' do
         expect(game_finished.status).to eq(:timeout)
       end
 
@@ -94,7 +89,7 @@ RSpec.describe Game, type: :model do
     end
 
     context 'when not failed' do
-      before(:each) { game_w_questions.finished_at = Time.now }
+      before { game_w_questions.finished_at = Time.now }
 
       it ':won' do
         game_w_questions.current_level = 15
@@ -104,6 +99,28 @@ RSpec.describe Game, type: :model do
       it ':money' do
         expect(game_w_questions.status).to eq(:money)
       end
+    end
+  end
+
+  describe 'current_game_question' do
+    let(:game) { create(:game_with_questions, user: user, current_level: 7) }
+
+    it 'return needed question' do
+      question = game_w_questions.current_game_question
+      question2 = game.current_game_question
+
+      expect(question.level).to eq(0)
+      expect(question2.level).to eq(7)
+    end
+  end
+
+  describe 'previous_level' do
+    let(:game1) { create(:game, current_level: 5) }
+    let(:game2) { create(:game, current_level: 13) }
+
+    it 'return previous level' do
+      expect(game1.previous_level).to eq(4)
+      expect(game2.previous_level).to eq(12)
     end
   end
 end
