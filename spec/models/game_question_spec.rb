@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe GameQuestion, type: :model do
   let(:game_question) { create(:game_question, a: 2, b: 1, c: 4, d: 3) }
-  let(:question) { create(:game_question) }
 
   describe 'game status' do
     it 'correct .variants' do
@@ -27,7 +26,6 @@ RSpec.describe GameQuestion, type: :model do
   describe 'correct_answer_key' do
     it 'correct answer' do
       expect(game_question.correct_answer_key).to eq('b')
-      expect(question.correct_answer_key).to eq('d')
     end
   end
 end
