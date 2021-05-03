@@ -123,4 +123,48 @@ RSpec.describe Game, type: :model do
       expect(game2.previous_level).to eq(12)
     end
   end
+
+  describe 'answer_current_question!' do
+    let(:game_w_last_level) { create(:game_with_questions, current_level: 14) }
+
+    context 'when answer correct' do
+      it 'return true, change game status' do
+        question = game_w_questions.current_game_question
+        current_level = game_w_questions.current_level
+        result = game_w_questions.answer_current_question!(question.correct_answer_key)
+
+        expect(game_w_questions.current_level).to eq(current_level + 1)
+        expect(result).to be_truthy
+      end
+
+      it 'return true, answer last' do
+        question = game_w_last_level.current_game_question
+        result = game_w_last_level.answer_current_question!(question.correct_answer_key)
+
+        expect(game_w_last_level.current_level).to eq(15)
+        expect(result).to be_truthy
+        expect(game_w_last_level.is_failed).to be_falsey
+      end
+    end
+
+    context 'when answer incorrect' do
+      it 'return false and change status game' do
+        result = game_w_questions.answer_current_question!('a')
+
+        expect(result).to be_falsey
+        expect(game_w_questions.is_failed).to be_truthy
+        expect(game_w_questions.finished_at).not_to be_nil
+      end
+    end
+
+    context 'when time limit exceed or game finished' do
+      it 'return false, time over' do
+        expect(game_timeout.answer_current_question!('a')).to be_falsey
+      end
+
+      it 'return false, game finished' do
+        expect(game_finished.answer_current_question!('b')).to be_falsey
+      end
+    end
+  end
 end

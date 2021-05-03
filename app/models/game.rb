@@ -61,20 +61,8 @@ class Game < ApplicationRecord
     true
   end
 
-  #---------  Основные игровые методы ------------------------------------
-
-  # возвращает true — если ответ верный,
-  # текущая игра при этом обновляет свое состояние:
-  #   меняется :current_level, :prize (если несгораемый уровень), поля :updated_at
-  #   прописывается :finished_at если это был последний вопрос
-  #
-  # возвращает false — если 1) ответ неверный 2) время вышло 3) игра уже закончена ранее
-  #   в любом случае прописывается :finished_at, :prize (если несгораемый уровень), :updated_at
-  # После вызова этого метода обновлится .status игры
-  #
-  # letter = 'a','b','c' или 'd'
   def answer_current_question!(letter)
-    return false if time_out! || finished? # законченную игру низя обновлять
+    return false if time_out! || finished?
 
     if current_game_question.answer_correct?(letter)
       if current_level == Question::QUESTION_LEVELS.max
