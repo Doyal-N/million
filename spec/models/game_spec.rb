@@ -132,6 +132,7 @@ RSpec.describe Game, type: :model do
         question = game_w_questions.current_game_question
         result = game_w_questions.answer_current_question!(question.correct_answer_key)
 
+        expect(game_w_questions.status).to eq(:in_progress)
         expect(game_w_questions.current_level).to eq(1)
         expect(result).to be_truthy
       end
@@ -140,6 +141,8 @@ RSpec.describe Game, type: :model do
         question = game_w_last_level.current_game_question
         result = game_w_last_level.answer_current_question!(question.correct_answer_key)
 
+        expect(game_w_last_level.status).to eq(:won)
+        expect(game_w_last_level.finished_at).not_to be_nil
         expect(game_w_last_level.current_level).to eq(15)
         expect(result).to be_truthy
       end
@@ -149,6 +152,8 @@ RSpec.describe Game, type: :model do
       it 'return false and change status game' do
         result = game_w_questions.answer_current_question!('a')
 
+        expect(game_w_questions.status).to eq(:fail)
+        expect(game_w_questions.finished_at).not_to be_nil
         expect(game_w_questions.current_level).to eq(0)
         expect(result).to be_falsey
       end
