@@ -44,10 +44,9 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
   config.include FactoryBot::Syntax::Methods
-  config.include Devise::TestHelpers, type: :controller
-  config.include Devise::TestHelpers, type: :view
-  config.include Warden::Test::Helpers, type: :feature
+  config.include Devise::Test::ControllerHelpers, type: :controller
   config.include ModelHelper, type: :model
+  config.include ControllerHelper, type: :controller
   # RSpec Rails can automatically mix in different behaviours to your tests
   # based on their file location, for example enabling you to call `get` and
   # `post` in specs under `spec/controllers`.

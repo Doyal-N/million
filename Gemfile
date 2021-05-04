@@ -18,6 +18,7 @@ gem 'rails_admin'
 group :development, :test do
   gem 'byebug'
   gem 'rspec-rails', '~> 4.0.1'
+  gem 'rails-controller-testing'
   gem 'factory_bot_rails'
   gem 'shoulda-matchers', '~> 4.5.1'
   gem 'capybara'
