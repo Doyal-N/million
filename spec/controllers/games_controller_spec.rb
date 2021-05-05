@@ -99,7 +99,7 @@ RSpec.describe GamesController, type: :controller do
         put :answer, params: { id: game, letter: 'a' }
 
         expect(response).to redirect_to user_path(user)
-        expect(flash[:alert]).to be
+        expect(assigns(:game).finished?).to be_truthy
       end
     end
   end
