@@ -44,7 +44,7 @@ RSpec.describe GamesController, type: :controller do
     end
   end
 
-  describe 'double game' do
+  describe 'create double game' do
     it "user can't to create second game" do
       login(user)
       game
@@ -52,6 +52,31 @@ RSpec.describe GamesController, type: :controller do
       expect { post :create }.to change(Game, :count).by(0)
       expect(response).to redirect_to game_path(game)
       expect(flash[:alert]).to be
+    end
+  end
+
+  describe 'anonim can not trigger all actions' do
+    it '#show' do
+      get :show, params: { id: game }
+
+      expect(response.status).not_to eq(200)
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
+    it '#create' do
+      post :create
+
+      expect(response.status).not_to eq(200)
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
+    it '#answer, #take_money, #help' do
+      %i[answer take_money help].each do |action|
+        put action, params: { id: game }
+
+        expect(response.status).not_to eq(200)
+        expect(response).to redirect_to(new_user_session_path)
+      end
     end
   end
 end

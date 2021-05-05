@@ -46,7 +46,6 @@ class GamesController < ApplicationController
 
   end
 
-  # вызывается из вьюхи без параметров
   def take_money
     @game.take_money!
     redirect_to user_path(current_user),
