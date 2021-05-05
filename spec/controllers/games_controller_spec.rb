@@ -79,4 +79,28 @@ RSpec.describe GamesController, type: :controller do
       end
     end
   end
+
+  describe 'PUT #answer' do
+    before { login(user) }
+
+    context 'user answered correctly' do
+      it 'game continue and redirect to game' do
+        question = game.current_game_question
+
+        put :answer, params: { id: game, letter: question.correct_answer_key }
+
+        expect(response).to redirect_to game_path(game)
+        expect(game.finished?).to be_falsey
+      end
+    end
+
+    context 'user answered wrong' do
+      it 'game finish and redirect to user' do
+        put :answer, params: { id: game, letter: 'a' }
+
+        expect(response).to redirect_to user_path(user)
+        expect(flash[:alert]).to be
+      end
+    end
+  end
 end
