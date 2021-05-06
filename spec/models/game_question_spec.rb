@@ -41,4 +41,18 @@ RSpec.describe GameQuestion, type: :model do
       expect(game_question.help_hash).to eq({ key: 'test', 'text' => 'body' })
     end
   end
+
+  describe 'add_fifty_fifty' do
+    it 'return empty hint at start game' do
+      expect(game_question.help_hash).not_to include(:fifty_fifty)
+    end
+
+    it 'return correct keys after added hint' do
+      game_question.add_fifty_fifty
+      fifty_fifty = game_question.help_hash[:fifty_fifty]
+
+      expect(fifty_fifty).to include(game_question.correct_answer_key)
+      expect(fifty_fifty.size).to eq 2
+    end
+  end
 end
