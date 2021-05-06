@@ -28,4 +28,17 @@ RSpec.describe GameQuestion, type: :model do
       expect(game_question.correct_answer_key).to eq('b')
     end
   end
+
+  describe 'help_hash' do
+    it 'return empty help_hash at start game' do
+      expect(game_question.help_hash).to eq({})
+    end
+
+    it 'write data in hash and save' do
+      game_question.help_hash[:key] = 'test'
+      game_question.help_hash['text'] = 'body'
+
+      expect(game_question.help_hash).to eq({ key: 'test', 'text' => 'body' })
+    end
+  end
 end

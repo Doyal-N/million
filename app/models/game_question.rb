@@ -9,9 +9,6 @@ class GameQuestion < ApplicationRecord
   validates :game, :question, presence: true
   validates :a, :b, :c, :d, inclusion: {in: 1..4}
 
-  # Автоматическая сериализация поля в базу (мы юзаем как обычный хэш,
-  # а рельсы в базе хранят как строчку)
-  # см. ссылки в материалах урока
   serialize :help_hash, Hash
 
   # help_hash у нас имеет такой формат:
@@ -41,7 +38,6 @@ class GameQuestion < ApplicationRecord
     { a => 'a', b => 'b', c => 'c', d => 'd' }[1]
   end
 
-  # текст правильного ответа
   def correct_answer
     variants[correct_answer_key]
   end

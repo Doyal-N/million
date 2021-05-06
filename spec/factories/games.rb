@@ -4,6 +4,10 @@ FactoryBot.define do
     current_level { 0 }
     is_failed { false }
     prize { 0 }
+    fifty_fifty_used { false }
+    audience_help_used { false }
+    friend_call_used { false }
+
     user
 
     factory :game_with_questions do
