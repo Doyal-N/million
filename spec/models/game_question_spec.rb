@@ -34,7 +34,7 @@ RSpec.describe GameQuestion, type: :model do
       expect(game_question.help_hash).to eq({})
     end
 
-    it 'write data in hash and save' do
+    it 'write data into hash and save' do
       game_question.help_hash[:key] = 'test'
       game_question.help_hash['text'] = 'body'
 
@@ -53,6 +53,20 @@ RSpec.describe GameQuestion, type: :model do
 
       expect(fifty_fifty).to include(game_question.correct_answer_key)
       expect(fifty_fifty.size).to eq 2
+    end
+  end
+
+  describe 'add_friend_call' do
+    it 'return empty hint at start game' do
+      expect(game_question.help_hash).not_to include(:friend_call)
+    end
+
+    it 'return key-hint after use' do
+      game_question.add_friend_call
+      friend_call = game_question.help_hash[:friend_call]
+
+      expect(game_question.help_hash).to include(:friend_call)
+      expect(friend_call).to end_with('A').or end_with('B').or end_with('C').or end_with('D')
     end
   end
 end
