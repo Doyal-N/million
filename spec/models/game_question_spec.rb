@@ -66,7 +66,7 @@ RSpec.describe GameQuestion, type: :model do
       friend_call = game_question.help_hash[:friend_call]
 
       expect(game_question.help_hash).to include(:friend_call)
-      expect(friend_call).to end_with('A').or end_with('B').or end_with('C').or end_with('D')
+      expect(friend_call).to match /A|B|C|D\z/
     end
   end
 end
