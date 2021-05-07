@@ -32,7 +32,6 @@ class GamesController < ApplicationController
     end
 
     respond_to do |format|
-      # Если это html-запрос, по-старинке редиректим пользователя в зависимости от ситуации
       format.html do
         if @answer_is_correct && !@game.finished?
           redirect_to game_path(@game)
@@ -43,7 +42,6 @@ class GamesController < ApplicationController
 
       format.js {}
     end
-
   end
 
   def take_money

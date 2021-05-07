@@ -88,6 +88,81 @@ RSpec.describe GamesController, type: :controller do
         end
       end
     end
+
+    describe 'help' do
+      context 'when user take help' do
+        describe 'fifty_fifty' do
+          it 'gives out help - fifty_fifty' do
+            expect(game.fifty_fifty_used).to be_falsey
+
+            put :help, params: { id: game, help_type: :fifty_fifty }
+
+            expect(assigns(:game).fifty_fifty_used).to be_truthy
+            expect(assigns(:game).current_game_question.help_hash).to include(:fifty_fifty)
+            expect(response).to redirect_to game_path(game)
+          end
+        end
+
+        describe 'friend_call' do
+          it 'gives out help - friend_call' do
+            expect(game.friend_call_used).to be_falsey
+
+            put :help, params: { id: game, help_type: :friend_call }
+
+            expect(assigns(:game).friend_call_used).to be_truthy
+            expect(assigns(:game).current_game_question.help_hash).to include(:friend_call)
+            expect(response).to redirect_to game_path(game)
+          end
+        end
+
+        describe 'audience_help' do
+          it 'gives out help - audience_help' do
+            expect(game.audience_help_used).to be_falsey
+
+            put :help, params: { id: game, help_type: :audience_help }
+
+            expect(assigns(:game).audience_help_used).to be_truthy
+            expect(assigns(:game).current_game_question.help_hash).to include(:audience_help)
+            expect(response).to redirect_to game_path(game)
+          end
+        end
+      end
+
+      context 'when user can not get help' do
+        describe 'fifty_fifty' do
+          it 'does not give out help - fifty_fifty' do
+            game.fifty_fifty_used = true
+
+            put :help, params: { id: game, help_type: :fifty_fifty }
+
+            expect(response).to redirect_to game_path(game)
+            expect(assigns(:game).use_help(:fifty_fifty)).to be_falsey
+          end
+        end
+
+        describe 'friend_call' do
+          it 'does not give out help - friend_call' do
+            game.friend_call_used = true
+
+            put :help, params: { id: game, help_type: :friend_call }
+
+            expect(response).to redirect_to game_path(game)
+            expect(assigns(:game).use_help(:friend_call)).to be_falsey
+          end
+        end
+
+        describe 'audience_help' do
+          it 'does not give out help - audience_help' do
+            game.audience_help_used = true
+
+            put :help, params: { id: game, help_type: :audience_help }
+
+            expect(response).to redirect_to game_path(game)
+            expect(assigns(:game).use_help(:audience_help)).to be_falsey
+          end
+        end
+      end
+    end
   end
 
   context 'when anonimous user' do

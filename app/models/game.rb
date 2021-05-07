@@ -90,7 +90,7 @@ class Game < ApplicationRecord
     raise ArgumentError.new('wrong help_type') unless help_types.include?(help_type)
 
     unless self["#{help_type}_used"]
-      toggle!(help_type)
+      toggle!("#{help_type}_used".to_sym)
       current_game_question.send("add_#{help_type}")
       true
     end
@@ -114,7 +114,6 @@ class Game < ApplicationRecord
 
   private
 
-  # Обновляет все нужные поля и начисляет юзеру выигрыш
   def finish_game!(amount = 0, failed = true)
 
     transaction do
