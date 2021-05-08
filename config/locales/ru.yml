@@ -23,18 +23,15 @@ ru:
       good_answer: "Правильный ответ, молодцом :)"
       bad_answer: "Правильный ответ: %{answer}. Игра закончена, ваш приз %{prize}"
 
-# статусы игры
   game_statuses:
-    fail: 'проигрыш'
-    timeout: 'время'
-    money: 'деньги'
-    won: 'победа'
-    in_progress: 'в процессе'
+    fail: "проигрыш"
+    timeout: "время"
+    money: "деньги"
+    won: "победа"
+    in_progress: "в процессе"
 
   number:
     currency:
       format:
-        # Формат отображения валюты и обозначение самой валюты
         unit: "₽"
         precision: 0
-
