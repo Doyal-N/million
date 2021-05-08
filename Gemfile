@@ -23,8 +23,6 @@ group :test do
   gem 'shoulda-matchers', '~> 4.5.1'
   gem 'capybara'
   gem 'launchy'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
   gem 'database_cleaner-active_record'
 end
 
