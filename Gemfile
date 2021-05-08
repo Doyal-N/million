@@ -25,6 +25,7 @@ group :test do
   gem 'launchy'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'database_cleaner-active_record'
 end
 
 group :development do
