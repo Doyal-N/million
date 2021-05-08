@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-sm-9 col-sm-push-3">
     <div class="text-center">
-      <%= image_tag asset_path('logo.png'), class: 'game-logo buffer-bottom' %>
+      <%= image_pack_tag('logo.png', class: 'game-logo buffer-bottom') %>
     </div>
 
     <div class="game-question">
@@ -19,7 +19,7 @@
     <ul class="list-group list-group-prizes game-prizes">
       <% Game::PRIZES.reverse.each_with_index do |prize, index| %>
         <li class="list-group-item text-center <%= 'active' if (14 - index == @game.current_level) %>">
-          <%= fa_icon('diamond') if Game::FIREPROOF_LEVELS.include?(14-index) %>
+          <%= content_tag(:i, nil, class: "fas fa-gem") if Game::FIREPROOF_LEVELS.include?(14-index) %>
           <%= prize %>
         </li>
       <% end %>
