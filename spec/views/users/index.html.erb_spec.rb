@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe 'users/index', type: :view do
-  before(:each) do
+  before do
     assign(:users, [
-      FactoryGirl.build_stubbed(:user, name: 'Вадик', balance: 5000),
-      FactoryGirl.build_stubbed(:user, name: 'Миша', balance: 3000),
+      build_stubbed(:user, name: 'Вадик', balance: 5000),
+      build_stubbed(:user, name: 'Миша', balance: 3000),
     ])
 
     render
