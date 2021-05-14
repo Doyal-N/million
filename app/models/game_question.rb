@@ -1,5 +1,3 @@
-require 'game_help_generator'
-
 class GameQuestion < ApplicationRecord
   belongs_to :game
   belongs_to :question
@@ -8,15 +6,9 @@ class GameQuestion < ApplicationRecord
   # автоматически берутся из связанной модели question
   delegate :text, :level, to: :question, allow_nil: true
 
-  # без игры и вопроса - игровой вопрос не имеет смысла
   validates :game, :question, presence: true
-
-  # в полях a,b,c,d прячутся индексы ответов из объекта :game
   validates :a, :b, :c, :d, inclusion: {in: 1..4}
 
-  # Автоматическая сериализация поля в базу (мы юзаем как обычный хэш,
-  # а рельсы в базе хранят как строчку)
-  # см. ссылки в материалах урока
   serialize :help_hash, Hash
 
   # help_hash у нас имеет такой формат:
@@ -26,9 +18,6 @@ class GameQuestion < ApplicationRecord
   #   friend_call: 'Василий Петрович считает, что правильный ответ A'
   # }
   #
-
-
-  # ----- Основные методы для доступа к данным в шаблонах и контроллерах -----------
 
   # Возвращает хэш, отсортированный по ключам:
   # {'a' => 'Текст ответа Х', 'b' => 'Текст ответа У', ... }
@@ -41,17 +30,14 @@ class GameQuestion < ApplicationRecord
     }
   end
 
-  # Возвращает истину, если переданная буква (строка или символ) содержит верный ответ
   def answer_correct?(letter)
     correct_answer_key == letter.to_s.downcase
   end
 
-  # ключ правильного ответа 'a', 'b', 'c', или 'd'
   def correct_answer_key
-    {a => 'a', b => 'b', c => 'c', d => 'd'}[1]
+    { a => 'a', b => 'b', c => 'c', d => 'd' }[1]
   end
 
-  # текст правильного ответа
   def correct_answer
     variants[correct_answer_key]
   end
@@ -88,7 +74,7 @@ class GameQuestion < ApplicationRecord
   def keys_to_use_in_help
     keys_to_use = variants.keys
     # Учитываем наличие подсказки 50/50
-    keys_to_use = help_hash[:fifty_fifty] if help_hash.has_key?(:fifty_fifty)
+    keys_to_use = help_hash[:fifty_fifty] if help_hash.key?(:fifty_fifty)
     keys_to_use
   end
 end

@@ -17,7 +17,7 @@
           <%# Выводим распределение голосов зрителей %>
           <% help[:audience_help].sort.map do |key, value| %>
             <div class="progress">
-              <div class="progress-bar progress-bar-danger" style="width: <%= value %>%;">
+              <div class="progress-bar progress-bar-danger">
                 <%= key.upcase %>: <%= value %>%
               </div>
             </div>
@@ -38,12 +38,16 @@
   </div>
   <div class="col-sm-4">
     <% unless game.friend_call_used? %>
-      <%= link_to fa_icon('phone'), help_game_path(game, help_type: :friend_call), method: :put, class: 'btn btn-default btn-block btn-help' %>
+      <%= link_to help_game_path(game, help_type: :friend_call), method: :put, class: 'btn btn-default btn-block btn-help' do %>
+        <i class="fas fa-mobile-alt"></i>
+      <% end %>
     <% end %>
   </div>
   <div class="col-sm-4">
     <% unless game.audience_help_used? %>
-      <%= link_to fa_icon('users'), help_game_path(game, help_type: :audience_help), method: :put, class: 'btn btn-default btn-block btn-help' %>
+      <%= link_to help_game_path(game, help_type: :audience_help), method: :put, class: 'btn btn-default btn-block btn-help' do %>
+        <i class="fas fa-users"></i>
+      <% end %>
     <% end %>
   </div>
 </div>

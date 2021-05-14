@@ -12,18 +12,21 @@ gem 'pg', '~> 1.1'
 gem 'rails-i18n'
 gem 'rails_admin'
 
-# Use Active Storage variant
-# gem 'image_processing', '~> 1.2'
-
 group :development, :test do
   gem 'byebug'
-  gem 'rspec-rails', '~> 3.4'
+  gem 'rspec-rails', '~> 4.0.1'
+  gem 'rails-controller-testing'
   gem 'factory_bot_rails'
-  gem 'shoulda-matchers'
+end
+
+group :test do
+  gem 'shoulda-matchers', '~> 4.5.1'
   gem 'capybara'
   gem 'launchy'
+  gem 'database_cleaner-active_record'
 end
 
 group :development do
   gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
 end

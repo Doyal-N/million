@@ -13,7 +13,7 @@ class GamesController < ApplicationController
       @game = Game.create_game_for_user!(current_user)
 
       redirect_to game_path(@game), notice: t('controllers.games.game_created', created_at: @game.created_at)
-    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => ex # если ошибка создания игры
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => ex
       Rails.logger.error("Error creating game for user #{current_user.id}, msg = #{ex}. #{ex.backtrace}")
       redirect_to :back, alert: t('controllers.games.game_not_created')
     end
@@ -32,7 +32,6 @@ class GamesController < ApplicationController
     end
 
     respond_to do |format|
-      # Если это html-запрос, по-старинке редиректим пользователя в зависимости от ситуации
       format.html do
         if @answer_is_correct && !@game.finished?
           redirect_to game_path(@game)
@@ -43,10 +42,8 @@ class GamesController < ApplicationController
 
       format.js {}
     end
-
   end
 
-  # вызывается из вьюхи без параметров
   def take_money
     @game.take_money!
     redirect_to user_path(current_user),
@@ -62,7 +59,6 @@ class GamesController < ApplicationController
 
     redirect_to game_path(@game), msg
   end
-
 
   private
 
