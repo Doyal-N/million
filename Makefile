@@ -6,6 +6,6 @@ push:
 rm:
 	git rm $(doc) --cached
 
-git-email:
+email:
 	git config --global user.email $(email)
 	git config --local user.email $(email)
